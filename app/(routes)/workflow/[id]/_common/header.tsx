@@ -46,7 +46,7 @@ const Header = ({ name, isLoading, workflowId }: PropsType) => {
                 {isLoading ? (
                   <Skeleton className="w-20" />
                 ) : (
-                  <h1 className="text-sm font-semibold truncate max-w-50">
+                  <h1 className="text-sm font-semibold truncate max-w-50 pr-2">
                     {name || "Untitled Workflow"}
                   </h1>
                 )}

@@ -5,6 +5,8 @@ import { useGetWorkflowById } from "@/features/use-workflow";
 import { useParams } from "next/navigation";
 import  Header  from "./_common/header";
 import { WorkflowProvider } from "@/context/workflow-context";
+import WorkflowCanvas from "./_common/workflow-canvas";
+import { ReactFlowProvider } from "@xyflow/react";
 
 
 const Page = () => {
@@ -18,24 +20,26 @@ const Page = () => {
   
   return (
     <div className="min-h-screen bg-background">
-      <WorkflowProvider>
-        <div className="flex flex-col h-screen relative">
-          <Header
-            name={workflow?.name}
-            workflowId={workflow?.id}
-            isLoading={isPending}
-          />
-          <div className="flex-1 relative overflow-hidden">
-            {isPending ? (
-              <div className="flex items-center justify-center h-full">
-                <Spinner className="size-12 text-primary" />
-              </div>
-            ) : (
-              <></>
-            )}
+      <ReactFlowProvider>
+        <WorkflowProvider>
+          <div className="flex flex-col h-screen relative">
+            <Header
+              name={workflow?.name}
+              workflowId={workflow?.id}
+              isLoading={isPending}
+            />
+            <div className="flex-1 relative overflow-hidden">
+              {isPending ? (
+                <div className="flex items-center justify-center h-full">
+                  <Spinner className="size-12 text-primary" />
+                </div>
+              ) : (
+                <WorkflowCanvas></WorkflowCanvas>
+              )}
+            </div>
           </div>
-        </div>
-      </WorkflowProvider>
+        </WorkflowProvider>
+      </ReactFlowProvider>
     </div>
   );
 }
