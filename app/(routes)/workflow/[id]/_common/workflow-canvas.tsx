@@ -10,6 +10,8 @@ import {
   Background,
   BackgroundVariant,
   useReactFlow,
+  Node,
+  Edge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import Controls from "@/components/workflow/controls";
@@ -17,7 +19,8 @@ import { TOOL_NODE_ENUM, ToolModeType } from "@/constant/workflow";
 import { cn } from "@/lib/utils";
 import NodePanel from "./node-panel";
 import { useWorkflow } from "@/context/workflow-context";
-import { createNode, NodeType } from "@/lib/workflow/node-config";
+import { createNode, NodeType, NodeTypeEnum } from "@/lib/workflow/node-config";
+import StartNode from "@/components/workflow/custom-nodes/start/node";
 
 const initialNodes = [
   { id: "n1", position: { x: 0, y: 0 }, data: { label: "Node 1" } },
@@ -25,15 +28,23 @@ const initialNodes = [
 ];
 const initialEdges = [{ id: "n1-n2", source: "n1", target: "n2" }];
 
+const start_node = createNode({
+  type: NodeTypeEnum.START,
+})
+
 const WorkflowCanvas = () => {
   const { view } = useWorkflow(); 
   const { screenToFlowPosition } = useReactFlow();
-  const [nodes, setNodes] = useState(initialNodes);
-  const [edges, setEdges] = useState(initialEdges);
+  const [nodes, setNodes] = useState<Node[]>([start_node]);
+  const [edges, setEdges] = useState<Edge[]>([]);
   const [toolMode, setToolMode] = useState<ToolModeType>(TOOL_NODE_ENUM.HAND);
 
   const isSelectMode = toolMode === TOOL_NODE_ENUM.SELECT;
   const isPreview = view === "preview"
+
+  const nodeTypes = {
+    [NodeTypeEnum.START]: StartNode
+  }
 
   const onNodesChange = useCallback(
     (changes:any) =>
@@ -83,6 +94,7 @@ const WorkflowCanvas = () => {
                 ? "cursor-default"
                 : "cursor-grab active:cursor-grabbing",
             )}
+            nodeTypes={nodeTypes}
             nodes={nodes}
             edges={edges}
             onNodesChange={onNodesChange}
@@ -90,11 +102,13 @@ const WorkflowCanvas = () => {
             onConnect={onConnect}
             onDragOver={onDragOver}
             onDrop={onDrop}
-            fitView
+            // fitView
             panOnDrag={!isSelectMode}
             panOnScroll={!isSelectMode}
             zoomOnScroll={!isSelectMode}
+            // nodesDraggable={isSelectMode}
             selectionOnDrag={isSelectMode}
+            defaultViewport={{ x: 0, y: 0, zoom: 1.2 }}
           >
             <Background
               variant={BackgroundVariant.Dots}
