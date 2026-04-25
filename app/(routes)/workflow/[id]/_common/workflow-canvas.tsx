@@ -10,8 +10,6 @@ import {
   Background,
   BackgroundVariant,
   useReactFlow,
-  Node,
-  Edge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import Controls from "@/components/workflow/controls";
@@ -21,6 +19,7 @@ import NodePanel from "./node-panel";
 import { useWorkflow } from "@/context/workflow-context";
 import { createNode, NodeType, NodeTypeEnum } from "@/lib/workflow/node-config";
 import StartNode from "@/components/workflow/custom-nodes/start/node";
+import AgentNode from "@/components/workflow/custom-nodes/agent/node";
 
 const initialNodes = [
   { id: "n1", position: { x: 0, y: 0 }, data: { label: "Node 1" } },
@@ -33,32 +32,31 @@ const start_node = createNode({
 })
 
 const WorkflowCanvas = () => {
-  const { view } = useWorkflow(); 
+  const { view, nodes, setNodes, edges, setEdges } = useWorkflow(); 
   const { screenToFlowPosition } = useReactFlow();
-  const [nodes, setNodes] = useState<Node[]>([start_node]);
-  const [edges, setEdges] = useState<Edge[]>([]);
   const [toolMode, setToolMode] = useState<ToolModeType>(TOOL_NODE_ENUM.HAND);
 
   const isSelectMode = toolMode === TOOL_NODE_ENUM.SELECT;
   const isPreview = view === "preview"
 
   const nodeTypes = {
-    [NodeTypeEnum.START]: StartNode
-  }
+    [NodeTypeEnum.START]: StartNode,
+    [NodeTypeEnum.AGENT]: AgentNode,
+  };
 
   const onNodesChange = useCallback(
     (changes:any) =>
       setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
-    [],
+    [setNodes],
   );
   const onEdgesChange = useCallback(
     (changes:any) =>
       setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
-    [],
+    [setEdges],
   );
   const onConnect = useCallback(
     (params:any) => setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
-    [],
+    [setEdges],
   );
   const onDragOver = useCallback((event:React.DragEvent) => {
     event.preventDefault();
@@ -82,7 +80,7 @@ const WorkflowCanvas = () => {
 
     setNodes((nds) => [...nds, newNode])
 
-  }, [screenToFlowPosition])
+  }, [screenToFlowPosition, setNodes])
 
   return (
     <>

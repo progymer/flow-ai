@@ -1,5 +1,6 @@
 import { FileIcon, GitBranch, Globe, MousePointer2Icon, Play, Square } from "lucide-react";
 import { generatedId } from "../helper";
+import { MODELS } from "./constants";
 
  export const NodeTypeEnum = {
     START: "start",
@@ -18,8 +19,9 @@ import { generatedId } from "../helper";
     icon: React.ElementType;
     color: string;
 
-    // inputs: Record<string, any>;
-    // outputs: string[]:
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    inputs: Record<string, any>;
+    outputs: string[];
  }
 
  export const NODE_CONFIG: Record<NodeType, NodeConfigBase> = {
@@ -28,39 +30,75 @@ import { generatedId } from "../helper";
      label: "Start",
      icon: Play,
      color: "bg-emerald-500",
-     //inputs: {
-     //    inputValue: ""
-     //}
+     inputs: {
+       inputValue: "",
+     },
+     outputs: ["input"]
    },
    [NodeTypeEnum.AGENT]: {
      type: NodeTypeEnum.AGENT,
      label: "Agent",
      icon: MousePointer2Icon,
      color: "bg-blue-500",
+     inputs: {
+       label: "Agent",
+       instructions: "",
+       model: MODELS[0].value,
+       tools: [],
+       outputFormat: "text", //text or json
+       responseSchema: null,
+     },
+     outputs: ["output.text"]
    },
    [NodeTypeEnum.IF_ELSE]: {
      type: NodeTypeEnum.IF_ELSE,
      label: "if / Else",
      icon: GitBranch,
      color: "bg-orange-500",
+     inputs: {
+       conditions: [
+         {
+           caseName: "",
+           variable: "",
+           operator: "",
+           value: "",
+         },
+       ],
+     },
+     outputs: ["output.result"]
    },
    [NodeTypeEnum.HTTP]: {
      type: NodeTypeEnum.HTTP,
      label: "HTTP",
      icon: Globe,
      color: "bg-blue-400",
+     inputs: {
+      method: "GET",
+      url: "",
+      headers: {},
+      body: {},
+     },
+     outputs: ["output.body"]
    },
    [NodeTypeEnum.END]: {
      type: NodeTypeEnum.END,
      label: "End",
      icon: Square,
      color: "bg-red-400",
+     inputs: {
+      value: "",
+     },
+     outputs: ["output.text"]
    },
    [NodeTypeEnum.COMMENT]: {
      type: NodeTypeEnum.COMMENT,
      label: "Note",
      icon: FileIcon,
      color: "bg-gray-500",
+     inputs: {
+       comments: "",
+     },
+     outputs: []
    },
  };
 
@@ -91,7 +129,8 @@ import { generatedId } from "../helper";
         data: {
             label: config.label,
             color: config.color,
-            //... config.inputs
+            outputs: config.outputs,
+            ... config.inputs
         }
     }    
  }
