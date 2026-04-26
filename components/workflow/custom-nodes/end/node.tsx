@@ -1,0 +1,29 @@
+import { NodeProps } from "@xyflow/react"
+import WorkflowNode from "../../workflow-node"
+import { Square } from "lucide-react"
+import EndSettings from "./settings"
+
+const EndNode = ({ data, selected, id }: NodeProps) => {
+  const bgColor = data.color as string
+
+  return (
+    <>
+      <WorkflowNode 
+        nodeId={id}
+        label="End"
+        subText=""
+        className="min-w-fit"
+        isDeletable={true}
+        Icon={Square}
+        selected={selected}
+        handles={{ target: true, source: false}}
+        color={bgColor}
+        settingTitle="End Node Settings"
+        settingDescription="Choose the workflow output"
+        settingComponent={<EndSettings id={id} data={data}/>}
+      />
+    </>
+  )
+}
+
+export default EndNode

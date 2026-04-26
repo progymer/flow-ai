@@ -22,6 +22,7 @@ import StartNode from "@/components/workflow/custom-nodes/start/node";
 import AgentNode from "@/components/workflow/custom-nodes/agent/node";
 import IfElseNode from "@/components/workflow/custom-nodes/if-else/node";
 import CommentNode from "@/components/workflow/custom-nodes/comment/node";
+import EndNode from "@/components/workflow/custom-nodes/end/node";
 
 const initialNodes = [
   { id: "n1", position: { x: 0, y: 0 }, data: { label: "Node 1" } },
@@ -46,6 +47,7 @@ const WorkflowCanvas = () => {
     [NodeTypeEnum.AGENT]: AgentNode,
     [NodeTypeEnum.IF_ELSE]: IfElseNode,
     [NodeTypeEnum.COMMENT]: CommentNode,
+    [NodeTypeEnum.END]: EndNode,
   };
 
   const onNodesChange = useCallback(
