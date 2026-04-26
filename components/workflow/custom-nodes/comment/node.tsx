@@ -18,9 +18,9 @@ const CommentNode = ({ data, id}: NodeProps) => {
             "w-full h-full box-border p-1 border rounded-lg bg-amber-300 dark:bg-[#b08915]"
         )}
         style={{
-            width: '155px',
+            width: '150px',
             minHeight: '100px',
-            maxHeight: '180px',
+            maxHeight: '150px',
         }}
     >
         <Textarea 
