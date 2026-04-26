@@ -23,7 +23,7 @@ type WorkflowNodeProps = {
     color?: string;
     status?: "initial" | "loading" | "error" | "success"
     className?: string;
-    childern?: React.ReactNode;
+    children?: React.ReactNode;
     //
     settingComponent?: React.ReactNode;
     settingTitle?: string;
@@ -41,7 +41,7 @@ const WorkflowNode = ({
     color,
     status,
     className,
-    childern,
+    children,
     settingComponent,
     settingTitle,
     settingDescription,
@@ -131,7 +131,7 @@ const WorkflowNode = ({
               )}
             </BaseNodeHeader>
 
-            {childern && <BaseNodeContent>{childern}</BaseNodeContent>}
+            {children && <BaseNodeContent>{children}</BaseNodeContent>}
 
             {handles.target && (
               <BaseHandle
