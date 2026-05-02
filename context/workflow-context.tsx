@@ -1,6 +1,6 @@
 import { createNode, NodeTypeEnum } from "@/lib/workflow/node-config";
 import { Edge, Node } from "@xyflow/react";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 
 export type WorkflowView = "edit" | "preview"
@@ -23,14 +23,27 @@ const WorkflowContext = createContext<WorkflowContextType | undefined>(
     undefined
 )
 
-export function WorkflowProvider({ children }: { children: React.ReactNode }) {
+export function WorkflowProvider({ 
+        workflowId,
+        initialNodes,
+        initialEdges,
+        children 
+    }: { 
+        children: React.ReactNode 
+        workflowId: string;
+        initialNodes: Node[];
+        initialEdges: Edge[];
+    }) {
     const start_node = createNode({
       type: NodeTypeEnum.START,
     })
 
     const [view, setView] = useState<WorkflowView>("edit")
-    const [nodes, setNodes] = useState<Node[]>([start_node]);
-    const [edges, setEdges] = useState<Edge[]>([]);
+    const [nodes, setNodes] = useState<Node[]>(
+      initialNodes.length ? initialNodes : [start_node],
+    );
+    const [edges, setEdges] = useState<Edge[]>(initialEdges);
+
 
     const getUpstreamNodes = (nodeId: string) => {
         const upstream = new Set<string>();

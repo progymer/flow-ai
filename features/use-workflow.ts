@@ -3,6 +3,8 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
 import { Workflow } from "@/lib/generated/prisma/client";
+import { Edge, Node } from "@xyflow/react";
+import { useWorkflowStore } from "@/store/workflow-store";
 
 type CreateWorkflowPayload = {
   name: string;
@@ -50,12 +52,17 @@ export const useCreateWorkflow = () => {
 };
 
 export const useGetWorkflowById = (workflowId: string) => {
+  const { setSavedState } = useWorkflowStore();
   return useQuery({
     queryKey: ["workflow", workflowId],
     queryFn: async () => {
       return await axios
         .get<{ data: WorkflowType }>(`/api/workflow/${workflowId}`)
-        .then((res) => res.data.data);
+        .then((res) => {
+          const result = res.data.data;
+          setSavedState(result.flowObject.nodes, result.flowObject.edges);
+          return result;
+        });
     },
     enabled: !!workflowId,
   });
@@ -78,3 +85,22 @@ export const useDeleteWorkflow = () => {
     },
   });
 };
+
+export const useUpdateWorkflow = (workflowId: string) => {
+  const { setSavedState } = useWorkflowStore();
+  return useMutation({
+    mutationFn: async (data: { nodes: Node[]; edges: Edge[] }) =>
+      axios
+        .put(`/api/workflow/${workflowId}`, data)
+        .then((res) => res.data),
+    onSuccess: (data) => {
+      const result = data.data;
+      setSavedState(result.flowObject.nodes, result.flowObject.edges)
+      toast.success("Workflow updated successfully")
+    },
+    onError: (error) => {
+      console.log("Update workflow failed", error)
+      toast.error("failed to update workflow")
+    }
+  })
+}
